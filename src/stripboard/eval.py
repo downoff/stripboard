@@ -26,9 +26,21 @@ TRUTH = "fixtures/ground_truth.json"
 
 
 def _matches(issue: dict, planted: dict) -> bool:
-    """A planted error counts as found when the report mentions every token that
-    makes it identifiable. Deliberately literal — a fuzzy match would let a vague
-    report take credit for a specific error."""
+    """A planted error counts as found when the report (a) classifies it as the
+    right KIND of error and (b) names the thing it is about.
+
+    Type is the primary discriminator because it is enum-constrained in the response
+    schema, so a match there is exact rather than lucky. must_mention then pins the
+    subject, so a correctly-typed report about the wrong object gets no credit.
+
+    2026-08-02: this used to be a pure token match over the prose, and it scored a
+    correct CE-3 report as BOTH a miss and a false alarm because the report said
+    "handed over and introduced" where the fixture said "first time" — a phrase
+    lifted from a character's dialogue. Requiring a model to echo dialogue wording
+    was never a real identity test; requiring the right enum'd type is stricter.
+    """
+    if issue.get("type", "") != planted["type"]:
+        return False
     blob = " ".join(
         [issue.get("summary", ""), issue.get("type", "")] + list(issue.get("evidence", []))
     ).lower()
@@ -75,9 +87,12 @@ def main() -> int:
     found, missed = [], []
     claimed = set()
     for p in planted:
-        hit = next((i for n, i in enumerate(issues) if _matches(i, p) and n not in claimed), None)
+        # carry the index, not the dict — issues.index() returns the first EQUAL
+        # dict, so two identical reports would both resolve to the same slot and
+        # one of them would silently escape the claimed set
+        hit = next((n for n, i in enumerate(issues) if _matches(i, p) and n not in claimed), None)
         if hit is not None:
-            claimed.add(issues.index(hit))
+            claimed.add(hit)
             found.append(p)
         else:
             missed.append(p)
