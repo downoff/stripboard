@@ -1,0 +1,62 @@
+{
+  "_comment": [
+    "Ground truth for fixtures/the_long_way_down.fountain — an ORIGINAL screenplay",
+    "written for this project, so there is no third-party IP in the test corpus.",
+    "Four continuity errors are planted deliberately. The continuity agent is scored",
+    "on how many it finds (recall) and how much noise it invents (precision).",
+    "A run that reports 4/4 with zero false positives is the bar."
+  ],
+  "scene_count": 12,
+  "planted_errors": [
+    {
+      "id": "CE-1",
+      "type": "PROPERTY_MISMATCH",
+      "category": "VEHICLE",
+      "summary": "The hero car is a '67 Mustang in the parking-lot scene and a '68 Mustang when the same car is referenced later.",
+      "scene_a": "EXT. DINER PARKING LOT - NIGHT (first)",
+      "scene_b": "EXT. DINER PARKING LOT - NIGHT (later)",
+      "must_mention": ["67", "68", "Mustang"]
+    },
+    {
+      "id": "CE-2",
+      "type": "TIME_OF_DAY_CONTRADICTION",
+      "category": "SCHEDULING",
+      "summary": "Slug line says DAY but the action states it is past midnight.",
+      "scene_a": "INT. MOTEL CORRIDOR - DAY",
+      "must_mention": ["midnight", "DAY"]
+    },
+    {
+      "id": "CE-3",
+      "type": "PROP_USED_BEFORE_ESTABLISHED",
+      "category": "PROP",
+      "summary": "The BRASS KEY opens the footlocker before the audience is shown where it came from; the pawn shop scene later treats its origin as unknown.",
+      "must_mention": ["BRASS KEY", "footlocker"]
+    },
+    {
+      "id": "CE-4",
+      "type": "WARDROBE_CONTINUITY",
+      "category": "WARDROBE",
+      "summary": "Rena wears a leather jacket in the opening diner scene and a denim jacket in the closing diner scene with no costume change beat.",
+      "scene_a": "INT. ROADSIDE DINER - DAY",
+      "scene_b": "INT. ROADSIDE DINER - NIGHT",
+      "must_mention": ["leather", "denim"]
+    }
+  ],
+  "expected_elements_min": {
+    "CAST": 5,
+    "VEHICLE": 1,
+    "PROP": 3,
+    "WARDROBE": 2
+  },
+  "expected_cast": ["RENA MARCH", "DELACROIX", "VOSS", "CLEANER"],
+  "expected_locations": [
+    "ROADSIDE DINER",
+    "DINER PARKING LOT",
+    "MUSTANG (MOVING)",
+    "HIGHWAY 9",
+    "MOTEL ROOM 12",
+    "MOTEL CORRIDOR",
+    "MOTEL FORECOURT",
+    "PAWN SHOP"
+  ]
+}
