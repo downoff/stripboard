@@ -90,7 +90,7 @@ one run is roughly 15 Gemini calls against a real billed key.
 
 ## Licence
 
-Apache-2.0. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
 
 ## Status
 
