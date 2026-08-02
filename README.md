@@ -60,6 +60,34 @@ handful of element rows with a planted continuity error, and pulls the contradic
 **through the MCP tools** rather than a direct driver call. If that passes, the integration the
 contest requires is real on your machine.
 
+## The hosted page
+
+`src/stripboard/web.py` is the one-page surface: the board, the continuity report, the
+cited breakdown, and a box to paste your own pages. `Dockerfile` puts a real
+clickhouse-server and the app in one image, so the hosted copy runs the same stack as
+your machine rather than a recording of it.
+
+Locally:
+
+```bash
+docker build -t stripboard .
+docker run -p 8080:8080 -e GOOGLE_API_KEY=... stripboard   # http://localhost:8080
+```
+
+To Cloud Run (one paste; substitute your own project):
+
+```bash
+gcloud run deploy stripboard --source . \
+  --project YOUR_PROJECT --region europe-west1 \
+  --allow-unauthenticated --memory 4Gi --cpu 2 \
+  --min-instances 0 --max-instances 2 --timeout 600 --concurrency 20 \
+  --set-env-vars "GOOGLE_API_KEY=YOUR_KEY"
+```
+
+`--min-instances 0` matters: the container idles at no cost and only bills while a run is
+in flight. The paste box is capped at 120k characters and 4 live runs a minute, because
+one run is roughly 15 Gemini calls against a real billed key.
+
 ## Licence
 
 Apache-2.0. See [LICENSE](LICENSE).
