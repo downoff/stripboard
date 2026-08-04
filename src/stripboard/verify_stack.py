@@ -12,7 +12,19 @@ Run it:  python -m stripboard.verify_stack
 from __future__ import annotations
 
 import json
+import os
 import sys
+
+# Default to the docker-compose credentials so `docker compose up -d` followed by
+# this module just works. A real environment still wins over every default.
+for _k, _v in {
+    "CLICKHOUSE_HOST": "localhost",
+    "CLICKHOUSE_PORT": "8123",
+    "CLICKHOUSE_USER": "stripboard",
+    "CLICKHOUSE_PASSWORD": "stripboard",
+    "CLICKHOUSE_SECURE": "false",
+}.items():
+    os.environ.setdefault(_k, _v)
 
 from mcp_clickhouse import create_clickhouse_client, list_databases, run_query
 
